@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="dao.AnswerMapper">
+    <resultMap id="allMap" type="entity.Answer">
+        <id property="aID" column="answer_id"/>
+        <result property="stuID" column="stu_id"/>
+        <result property="paperID" column="paper_id"/>
+        <result property="qID" column="question_id"/>
+        <result property="content" column="content"/>
+        <result property="score" column="score"/>
+        <result property="note" column="note" />
+        <result property="rID" column="result_id"/>
+    </resultMap>
+    <insert id="insert">
+        INSERT INTO answer(stu_id,paper_id,question_id,content,result_id)
+        VALUES(#{stuID},#{paperID},#{qID},#{content},#{rID})
+    </insert>
+    <update id="update">
+        UPDATE answer SET score=#{score},note=#{note}
+        WHERE answer_id=#{aID}
+    </update>
+    <select id="getPaperIDByRID" resultType="java.lang.Integer">
+        select distinct paper_id from answer where result_id = #{arg0};
+    </select>
+    <select id="selectByRIDAndQID" resultType="entity.Answer" resultMap="allMap">
+        select * from answer where result_id = #{arg0} and question_id = #{arg1};
+    </select>
+</mapper>

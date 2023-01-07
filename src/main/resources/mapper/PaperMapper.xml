@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="dao.PaperMapper">
+    <resultMap id="allMap" type="entity.Paper">
+        <id property="pID" column="paper_id"/>
+        <result property="pName" column="paper_name"/>
+        <result property="courseID" column="course_id"/>
+        <result property="pContent" column="content"/>
+        <result property="pScore" column="paper_score"/>
+        <association property="course" column="course_id" select="dao.CourseMapper.selectByPK"/>
+    </resultMap>
+    <insert id="insertPaper">
+        insert into paper(paper_name,course_id,content,paper_score)
+        values(#{pName},#{courseID},#{pContent},#{pScore})
+    </insert>
+    <insert id="AutoGroup">
+        call auto_paper(#{courseID}, #{bankID}, #{pName}, #{singleNum}, #{fillNum}, #{judgeNum}, #{shortNum})
+    </insert>
+    <delete id="delete">
+        delete from paper where paper_id=#{arg0}
+    </delete>
+    <select id="findAll" resultType="entity.Paper" resultMap="allMap">
+        select * from paper
+    </select>
+    <select id="selectByPK" resultType="entity.Paper" resultMap="allMap">
+        select * from paper where paper_id=#{pID}
+    </select>
+    <select id="selectByCourseID" resultType="entity.Paper" resultMap="allMap">
+        select * from paper where course_id=#{arg0}
+    </select>
+    <select id="selectByTeaNo" resultType="entity.Paper" resultMap="allMap">
+        select * from paper where course_id in (select course_id from course_teacher where tea_id=#{arg0})
+    </select>
+    <select id="getPaperNum" resultType="java.lang.Integer">
+        select count(*) from paper
+    </select>
+
+</mapper>

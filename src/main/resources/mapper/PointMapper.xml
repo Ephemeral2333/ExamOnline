@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="dao.PointMapper">
+    <resultMap id="allMap" type="entity.Point">
+        <id property="pID" column="point_id" />
+        <result property="pName" column="point_name" />
+        <result property="courseID" column="course_id" />
+        <association property="course" column="course_id" select="dao.CourseMapper.selectByPK" />
+    </resultMap>
+
+    <resultMap id="PBank" type="entity.Point">
+        <id property="pID" column="point_id" />
+        <result property="pName" column="point_name" />
+        <association property="bank" column="bank_id" select="dao.BankMapper.selectByPK" />
+    </resultMap>
+
+    <insert id="insert">
+        INSERT INTO point (point_name, course_id)
+        VALUES (#{pName}, #{courseID})
+    </insert>
+    <update id="update">
+        UPDATE point
+        SET point_name = #{pName}, course_id = #{courseID}
+        WHERE point_id = #{pID}
+    </update>
+    <delete id="delete">
+        DELETE FROM point
+        WHERE point_id = #{pID}
+    </delete>
+    <select id="findAll" resultType="entity.Point" resultMap="allMap">
+        select * from point
+    </select>
+    <select id="selectByPK" resultType="entity.Point" resultMap="allMap">
+        select * from point
+        where point_id = #{pID}
+    </select>
+    <select id="selectByTeaNo" resultType="entity.Point" resultMap="allMap">
+        select * from point
+        where course_id in (select course_id from course_teacher where tea_id = #{teaNo})
+    </select>
+    <select id="selectByBankID" resultType="entity.Point" resultMap="PBank">
+        select * from bank_point where bank_id = #{bankID}
+    </select>
+
+
+</mapper>

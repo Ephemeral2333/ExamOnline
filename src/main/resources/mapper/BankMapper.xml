@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="dao.BankMapper">
+    <resultMap id="allMap" type="entity.Bank">
+        <id property="bID" column="bank_id"/>
+        <result property="bName" column="bank_name"/>
+        <result property="courseID" column="course_id"/>
+        <association property="course" column="course_id" select="dao.CourseMapper.selectByPK"/>
+    </resultMap>
+    <insert id="insert">
+        INSERT INTO bank (bank_name, course_id)
+        VALUES (#{bName}, #{courseID})
+    </insert>
+    <update id="update">
+        UPDATE bank
+        SET bank_name = #{bName}, course_id = #{courseID}
+        WHERE bank_id = #{bID}
+    </update>
+    <delete id="delete">
+        DELETE FROM bank
+        WHERE bank_id = #{bID}
+    </delete>
+    <select id="findAll" resultMap="allMap">
+        select * from bank
+    </select>
+    <select id="selectByPK" resultType="entity.Bank" resultMap="allMap">
+        select * from bank
+        where bank_id = #{bID}
+    </select>
+    <select id="selectByTeaNo" resultType="entity.Bank" resultMap="allMap">
+        select * from bank
+        where course_id in (select course_id from course_teacher where tea_id = #{arg0})
+    </select>
+    <select id="getBankNum" resultType="java.lang.Integer">
+        select count(*) from bank
+    </select>
+    <select id="findByCourseID" resultType="entity.Bank" resultMap="allMap">
+        select * from bank
+        where course_id = #{arg0}
+    </select>
+</mapper>

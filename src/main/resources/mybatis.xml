@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+    <properties resource="db.properties"/>
+    <!-- 配置开发环境信息 -->
+    <environments default="mysql">
+        <environment id="mysql">
+            <!-- 使用JDBC事务管理器，目前由MyBatis管理 -->
+            <transactionManager type="JDBC"/>
+            <!-- 配置DataSource标准数据源，目前由MyBatis管理 -->
+            <dataSource type="POOLED">
+                <property name="driver" value="${jdbc.driver}"/>
+                <property name="url" value="${jdbc.url}"/>
+                <property name="username" value="${jdbc.username}"/>
+                <property name="password" value="${jdbc.password}"/>
+            </dataSource>
+        </environment>
+    </environments>
+
+    <mappers>
+        <mapper resource="mapper/UserMapper.xml"/>
+        <mapper resource="mapper/RoleMapper.xml"/>
+        <mapper resource="mapper/RoleUserMapper.xml"/>
+        <mapper resource="mapper/StudentMapper.xml"/>
+        <mapper resource="mapper/TeacherMapper.xml"/>
+        <mapper resource="mapper/DepartmentMapper.xml"/>
+        <mapper resource="mapper/MajorMapper.xml"/>
+        <mapper resource="mapper/ClassesMapper.xml"/>
+        <mapper resource="mapper/CourseMapper.xml"/>
+        <mapper resource="mapper/PointMapper.xml"/>
+        <mapper resource="mapper/BankMapper.xml"/>
+        <mapper resource="mapper/QuestionMapper.xml"/>
+        <mapper resource="mapper/OptionMapper.xml"/>
+        <mapper resource="mapper/PaperMapper.xml"/>
+        <mapper resource="mapper/ExamMapper.xml"/>
+        <mapper resource="mapper/ResultMapper.xml"/>
+        <mapper resource="mapper/AnswerMapper.xml"/>
+        <mapper resource="mapper/InfoMapper.xml"/>
+    </mappers>
+</configuration>

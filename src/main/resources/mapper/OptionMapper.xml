@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="dao.OptionMapper">
+    <resultMap id="allMap" type="entity.Option">
+        <id property="optID" column="opt_id"/>
+        <result property="optA" column="opt_a"/>
+        <result property="optB" column="opt_b"/>
+        <result property="optC" column="opt_c"/>
+        <result property="optD" column="opt_d"/>
+    </resultMap>
+    <select id="selectByPK" resultType="entity.Option" resultMap="allMap">
+        select * from `option` where opt_id = #{arg0}
+    </select>
+
+</mapper>

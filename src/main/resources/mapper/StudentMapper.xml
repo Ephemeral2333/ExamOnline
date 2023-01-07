@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="dao.StudentMapper">
+    <resultMap id="AllMap" type="entity.Student">
+        <id property="stu_id" column="stu_id"/>
+        <result property="stu_no" column="stu_no"/>
+        <result property="stu_name" column="stu_name"/>
+        <result property="class_id" column="class_id"/>
+        <association property="classes" column="class_id" select="dao.ClassesMapper.selectByPK"/>
+        <association property="user" column="stu_no" select="dao.UserMapper.findByUsername"/>
+    </resultMap>
+    <insert id="insertStudent">
+        insert into student(stu_no,stu_name) values(#{arg0}, #{arg1})
+    </insert>
+    <insert id="insert">
+        call add_student(#{stu_no},#{user.password},#{stu_name},#{user.salt},#{class_id})
+    </insert>
+    <update id="update">
+        update student set stu_name=#{stu_name},class_id=#{class_id} where stu_no=#{stu_no}
+    </update>
+    <delete id="deleteByPK">
+        delete from student where stu_no=#{arg0}
+    </delete>
+    <select id="selectNameByUid" resultType="java.lang.String">
+        select stu_name from student where stu_no = #{arg0}
+    </select>
+    <select id="selectStudentByUid" resultType="entity.Student" resultMap="AllMap">
+        select * from student where stu_no = #{arg0}
+    </select>
+    <select id="findAll" resultType="entity.Student" resultMap="AllMap">
+        select * from student
+    </select>
+    <select id="getStudentNum" resultType="java.lang.Integer">
+        select count(*) from student
+    </select>
+</mapper>

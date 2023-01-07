@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="dao.ClassesMapper">
+    <resultMap id="allMap" type="entity.Classes">
+        <id property="cID" column="class_id"/>
+        <result property="cName" column="class_name"/>
+        <result property="majorID" column="major_id"/>
+        <result property="total" column="total"/>
+        <association property="major" column="major_id" select="dao.MajorMapper.selectById"/>
+    </resultMap>
+    <insert id="insert">
+        insert into class(class_name,major_id) values(#{cName},#{majorID})
+    </insert>
+    <update id="update">
+        update class set class_name=#{cName},major_id=#{majorID} where class_id=#{cID}
+    </update>
+    <delete id="deleteByPK">
+        delete from class where class_id=#{cID}
+    </delete>
+    <select id="findAll" resultType="entity.Classes" resultMap="allMap">
+        select class.class_id, class_name, major_id, count(stu_no) as total from class left join student on class.class_id = student.class_id group by class_id
+    </select>
+    <select id="selectByPK" resultType="entity.Classes" resultMap="allMap">
+        select * from class where class_id=#{cID}
+    </select>
+</mapper>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="dao.RoleMapper">
+    <resultMap id="findAll" type="entity.Role">
+        <id property="r_id" column="role_id"/>
+        <result property="r_name" column="role_name"/>
+    </resultMap>
+    <select id="listRoles" resultType="java.lang.String">
+        select r.role_name from user u left join role_user ur on u.id = ur.user_id left join role r on ur.role_id = r.role_id where u.id = #{u_id}
+    </select>
+</mapper>

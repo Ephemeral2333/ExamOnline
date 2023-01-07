@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="dao.QuestionMapper">
+    <resultMap id="allMap" type="entity.Question">
+        <id property="qID" column="question_id" />
+        <result property="qName" column="question_name" />
+        <result property="qType" column="question_type" />
+        <result property="opt" column="opt" />
+        <result property="qAnswer" column="question_answer" />
+        <result property="qScore" column="question_score" />
+        <result property="pointID" column="point_id" />
+        <result property="bankID" column="bank_id" />
+        <association property="bank" column="bank_id" select="dao.BankMapper.selectByPK" />
+        <association property="point" column="point_id" select="dao.PointMapper.selectByPK" />
+        <association property="opti" column="opt" select="dao.OptionMapper.selectByPK" />
+    </resultMap>
+    <insert id="insert">
+        INSERT INTO question(question_name,question_type,question_answer,question_score,point_id,bank_id)
+        VALUES(#{qName},#{qType},#{qAnswer},#{qScore},#{pointID},#{bankID})
+    </insert>
+    <insert id="insertSingle">
+        call add_single(#{qName},#{qType}, #{qAnswer},#{qScore},#{pointID},#{bankID}, #{opti.optA},#{opti.optB},#{opti.optC},#{opti.optD})
+    </insert>
+    <update id="update">
+        UPDATE question SET question_name=#{qName},question_type=#{qType},question_answer=#{qAnswer},question_score=#{qScore},point_id=#{pointID},bank_id=#{bankID}
+        WHERE question_id=#{qID}
+    </update>
+    <update id="updateSingle">
+        call update_single(#{qID},#{qName},#{qType}, #{opt}, #{qAnswer},#{qScore},#{pointID},#{bankID}, #{opti.optA},#{opti.optB},#{opti.optC},#{opti.optD})
+    </update>
+    <delete id="delete">
+        DELETE FROM question WHERE question_id=#{qID}
+    </delete>
+    <select id="selectByBankID" resultType="entity.Question" resultMap="allMap">
+        select * from question where bank_id = #{bankID}
+    </select>
+    <select id="selectByPK" resultType="entity.Question" resultMap="allMap">
+        select * from question where question_id = #{qID}
+    </select>
+    <select id="selectSingle" resultType="entity.Question" resultMap="allMap">
+        select * from question where question_type = '选择题'
+    </select>
+    <select id="selectJudge" resultType="entity.Question" resultMap="allMap">
+        select * from question where question_type = '判断题'
+    </select>
+    <select id="selectFill" resultType="entity.Question" resultMap="allMap">
+        select * from question where question_type = '填空题'
+    </select>
+    <select id="selectShortAnswer" resultType="entity.Question" resultMap="allMap">
+        select * from question where question_type = '简答题'
+    </select>
+    <select id="selectByContent" resultType="entity.Question" resultMap="allMap">
+        select * from question where find_in_set(question_id, #{arg0})>0
+    </select>
+    <select id="selectByCourseID" resultType="entity.Question" resultMap="allMap">
+        select * from question where bank_id in (select bank_id from bank where course_id = #{courseID})
+    </select>
+    <select id="calculateAllScore" resultType="java.lang.Integer">
+        select sum(question_score) from question where find_in_set(question_id, #{arg0})>0
+    </select>
+
+</mapper>

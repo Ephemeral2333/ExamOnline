@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="dao.InfoMapper">
+    <resultMap id="allMap" type="entity.Info">
+        <id property="iID" column="info_id"/>
+        <result property="rID" column="result_id"/>
+        <result property="sNo" column="stu_id"/>
+        <result property="content" column="info_content"/>
+        <result property="time" column="info_time"/>
+        <result property="state" column="info_state" />
+        <association property="result" column="result_id" select="dao.ResultMapper.selectByPK"/>
+        <association property="student" column="stu_id" select="dao.StudentMapper.selectStudentByUid"/>
+    </resultMap>
+    <insert id="insert">
+        INSERT INTO info (result_id, stu_id, info_content, info_time, info_state)
+        VALUES (#{rID}, #{sNo}, #{content}, now(), #{state})
+    </insert>
+    <update id="rejectCheck">
+        UPDATE info SET info_state = '已拒绝' WHERE info_id = #{arg0}
+    </update>
+    <update id="handleCheck">
+        UPDATE info SET info_state = '已处理' WHERE info_id = #{arg0}
+    </update>
+    <select id="selectByTeaNo" resultType="entity.Info" resultMap="allMap">
+        SELECT * FROM info WHERE result_id IN (SELECT result_id FROM result WHERE exam_id IN (SELECT exam_id FROM exam WHERE course_id IN (SELECT course_id FROM course_teacher WHERE tea_id = #{arg0})))
+    </select>
+    <select id="selectByPK" resultType="entity.Info" resultMap="allMap">
+        SELECT * FROM info WHERE info_id = #{arg0}
+    </select>
+    <select id="selectByStu" resultType="entity.Info" resultMap="allMap">
+        SELECT * FROM info WHERE stu_id = #{arg0}
+    </select>
+</mapper>

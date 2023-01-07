@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="dao.ExamMapper">
+    <resultMap id="allMap" type="entity.Exam">
+        <id property="eID" column="exam_id"/>
+        <result property="eName" column="exam_name"/>
+        <result property="paperID" column="paper_id"/>
+        <result property="courseID" column="course_id"/>
+        <result property="startTime" column="start_time"/>
+        <result property="endTime" column="end_time"/>
+        <result property="state" column="state"/>
+        <association property="paper" column="paper_id" select="dao.PaperMapper.selectByPK"/>
+        <association property="course" column="course_id" select="dao.CourseMapper.selectByPK"/>
+    </resultMap>
+
+    <resultMap id="examScore" type="entity.Exam">
+        <id property="eID" column="exam_id"/>
+        <result property="eName" column="exam_name"/>
+        <result property="maxScore" column="max_score"/>
+        <result property="minScore" column="min_score"/>
+        <result property="avgScore" column="avg_score"/>
+    </resultMap>
+
+    <insert id="insertExam">
+        INSERT INTO exam(exam_name, paper_id, course_id, start_time, end_time, duration)
+        VALUES(#{eName}, #{paperID}, #{courseID}, #{startTime}, #{endTime}, #{duration})
+    </insert>
+    <update id="updateState">
+        call update_exam()
+    </update>
+    <update id="update">
+        UPDATE exam SET exam_name=#{eName},start_time=#{startTime}, end_time=#{endTime}, duration=#{duration} WHERE exam_id=#{eID}
+    </update>
+    <delete id="delete">
+        DELETE FROM exam WHERE exam_id=#{arg0}
+    </delete>
+    <select id="findAll" resultType="entity.Exam" resultMap="allMap">
+        select * from exam
+    </select>
+    <select id="selectByPK" resultType="entity.Exam" resultMap="allMap">
+        select * from exam where exam_id=#{arg0}
+    </select>
+    <select id="selectByTeaNo" resultType="entity.Exam" resultMap="allMap">
+        select * from exam where course_id in (select course_id from course_teacher where tea_id=#{arg0})
+    </select>
+    <select id="findReadyExam" resultType="entity.Exam" resultMap="allMap">
+        select * from exam where exam_id in (select exam_id from result where stu_id=#{arg0} and stage='待考试')
+    </select>
+    <select id="getMAXEID" resultType="java.lang.Integer">
+        select max(exam_id) from exam
+    </select>
+    <select id="getExamNum" resultType="java.lang.Integer">
+        select count(*) from exam
+    </select>
+    <select id="selectByTeacherNo" resultType="entity.Exam" resultMap="examScore">
+        select * from exam_score where exam_id in (select exam_id from exam where course_id in (select course_id from course_teacher where tea_id=#{arg0}))
+    </select>
+
+</mapper>

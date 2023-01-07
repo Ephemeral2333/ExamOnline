@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="dao.ResultMapper">
+    <resultMap id="allMap" type="entity.Result">
+        <id property="rID" column="result_id" />
+        <result property="eID" column="exam_id" />
+        <result property="sNo" column="stu_id" />
+        <result property="sScore" column="score" />
+        <result property="stage" column="stage" />
+        <association property="exam" column="exam_id" select="dao.ExamMapper.selectByPK" />
+        <association property="student" column="stu_id" select="dao.StudentMapper.selectStudentByUid" />
+    </resultMap>
+
+    <resultMap id="ques_result" type="entity.Result">
+        <id property="rID" column="result_id" />
+        <result property="qID" column="question_id" />
+        <result property="sContent" column="content" />
+        <result property="paperID" column="paper_id" />
+        <result property="qAnswer" column="question_answer" />
+        <association property="question" column="question_id" select="dao.QuestionMapper.selectByPK" />
+        <association property="paper" column="paper_id" select="dao.PaperMapper.selectByPK" />
+    </resultMap>
+
+    <insert id="insertResult">
+        INSERT INTO result(exam_id, stu_id, score, stage)
+        VALUES(#{eID}, #{sNo}, -1, #{stage})
+    </insert>
+    <update id="updateHandleExam">
+        UPDATE result
+        SET stage = '已结束'
+        WHERE result_id = #{rID}
+    </update>
+    <update id="updateState">
+        call update_result()
+    </update>
+    <update id="updateScore">
+        call update_score(#{arg0})
+    </update>
+    <select id="findOverExam" resultType="entity.Result" resultMap="allMap">
+        select * from result where stu_id=#{arg0} and (stage='已结束' or stage='已评分' or stage='未参与')
+    </select>
+    <select id="getResultIDByExamAndStu" resultType="java.lang.Integer">
+        select result_id from result where exam_id=#{arg1} and stu_id=#{arg0}
+    </select>
+    <select id="selectByTeaNo" resultType="entity.Result" resultMap="allMap">
+        select * from result where exam_id in (select exam_id from exam where course_id in (select course_id from course_teacher where tea_id=#{arg0})) and stage='已结束'
+    </select>
+    <select id="selectPaperDetail" resultType="entity.Result" resultMap="ques_result">
+        select * from paper_result_answer where result_id=#{arg0}
+    </select>
+    <select id="selectAlreadyCheck" resultType="entity.Result" resultMap="allMap">
+        select * from result where exam_id in (select exam_id from exam where course_id in (select course_id from course_teacher where tea_id=#{arg0})) and (stage='已评分' or stage='未参与')
+    </select>
+    <select id="selectByPK" resultType="entity.Result" resultMap="allMap">
+        select * from result where result_id=#{arg0}
+    </select>
+    <select id="findAll" resultType="entity.Result" resultMap="allMap">
+        select * from result
+    </select>
+
+</mapper>

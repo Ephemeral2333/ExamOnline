@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="dao.CourseMapper">
+    <resultMap id="allMap" type="entity.Course">
+        <id property="cID" column="course_id"/>
+        <result property="cName" column="course_name"/>
+        <result property="majorID" column="major_id"/>
+        <association property="major" column="major_id" select="dao.MajorMapper.selectById"/>
+        <association property="teacherList" column="course_id" select="dao.TeacherMapper.selectTeaByCourseID"/>
+    </resultMap>
+    <insert id="insert">
+        insert into course(course_id, course_name,major_id) values(#{cID}, #{cName},#{majorID})
+    </insert>
+    <insert id="insertTeacher">
+        insert into course_teacher(course_id, tea_id) values(#{arg0},#{arg1})
+    </insert>
+    <update id="update">
+        update course set course_name=#{cName},major_id=#{majorID} where course_id=#{cID}
+    </update>
+    <update id="updateTeacher">
+        update course_teacher set tea_id=#{arg2} where course_id=#{arg0} and tea_id=#{arg1}
+    </update>
+    <delete id="delete">
+        delete from course where course_id=#{cID}
+    </delete>
+    <delete id="deleteTeacher">
+        delete from course_teacher where course_id=#{arg0} and tea_id=#{arg1}
+    </delete>
+    <select id="findAll" resultType="entity.Course" resultMap="allMap">
+        select * from course
+    </select>
+    <select id="selectByPK" resultType="entity.Course" resultMap="allMap">
+        select * from course where course_id=#{cID}
+    </select>
+    <select id="selectByMajorID" resultType="entity.Course" resultMap="allMap">
+        select * from course where major_id=#{majorID}
+    </select>
+    <select id="selectStuByCourseID" resultType="java.lang.String">
+        select stu_no from stu_course where course_id=#{arg0}
+    </select>
+    <select id="selectByTeaNo" resultType="entity.Course" resultMap="allMap">
+        select * from course where course_id in (select course_id from course_teacher where tea_id=#{arg0})
+    </select>
+
+</mapper>

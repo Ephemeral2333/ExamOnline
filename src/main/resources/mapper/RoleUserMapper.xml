@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="dao.RoleUserMapper">
+
+    <insert id="insert">
+        insert into role_user (role_id, user_id) values (#{arg0}, #{arg1})
+    </insert>
+    <delete id="deleteByPK">
+        delete from role_user where role_id = #{arg0} and user_id = #{arg1}
+    </delete>
+    <select id="selectRoleNameByUid" resultType="java.lang.Integer">
+        select role_id from role_user where user_id = #{arg0}
+    </select>
+</mapper>

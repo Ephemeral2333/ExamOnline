@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="dao.TeacherMapper">
+    <resultMap id="allMap" type="entity.Teacher">
+        <id property="tea_id" column="tea_id"/>
+        <result property="tea_name" column="tea_name"/>
+        <result property="tea_no" column="tea_no"/>
+        <result property="major_id" column="major_id"/>
+        <association property="major" column="major_id" select="dao.MajorMapper.selectById"/>
+        <association property="user" column="tea_no" select="dao.UserMapper.findByUsername"/>
+    </resultMap>
+    <insert id="insert">
+        call add_teacher(#{tea_no},#{user.password},#{tea_name}, #{user.salt}, #{major_id})
+    </insert>
+    <update id="update">
+        update teacher set tea_name=#{tea_name},major_id=#{major_id} where tea_no=#{tea_no}
+    </update>
+    <delete id="delete">
+        delete from teacher where tea_no=#{tea_no}
+    </delete>
+
+    <select id="selectNameByTid" resultType="java.lang.String">
+        select tea_name from teacher where tea_no = #{arg0}
+    </select>
+    <select id="selectTeaByCourseID" resultType="entity.Teacher" resultMap="allMap">
+        select * from teacher where tea_no in (select course_teacher.tea_id from course_teacher where course_id=#{cID})
+    </select>
+    <select id="findAll" resultType="entity.Teacher" resultMap="allMap">
+        select * from teacher
+    </select>
+    <select id="selectByPK" resultType="entity.Teacher" resultMap="allMap">
+        select * from teacher where tea_no=#{tea_no}
+    </select>
+</mapper>
