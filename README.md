@@ -27,7 +27,7 @@
 
 #### 四、运行方式
 
-- 登录账号：root；登录密码：123456 创建一个名称为“exam_online”的数据库，导入SQL文件夹里面的examonline.sql文件
+- 登录账号：root；登录密码：123456 创建一个名称为“exam_online”的数据库，导入exam_online.sql文件
 - IntelliJ IDEA配置： 安装Lombok插件，更新maven，配置Tomcat 9.0.68服务器
 
 #### 五、数据库设计
