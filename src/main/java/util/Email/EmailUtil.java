@@ -10,8 +10,8 @@ import java.util.Properties;
 
 public class EmailUtil {
     private static String fromEmail = "liyh@stu.haut.edu.cn";
-    private static String fromEmailPw = "CF698QhzpD7qy99w";
-    private static String myEmailSMTPHost = "smtp.exmail.qq.com";
+    private static String fromEmailPw = "";
+    private static String myEmailSMTPHost = "";
     private static Properties props;
     private static Session session;
     private String vCode;
